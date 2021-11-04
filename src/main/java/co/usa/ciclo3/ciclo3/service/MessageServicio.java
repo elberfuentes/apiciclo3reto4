@@ -39,4 +39,28 @@ public class MessageServicio {
 
     }
     
+    public Message update(Message message) {
+		if(message.getIdMessage()!=null) {
+			Optional<Message> consulta= messageRepository.getMessage(message.getIdMessage());
+			if(!consulta.isEmpty()) {
+				if(message.getMessageText()!=null) {
+					consulta.get().setMessageText(message.getMessageText());
+				}
+				messageRepository.save(consulta.get());
+				return consulta.get();
+			}else {
+				return message;
+			}
+		}else {
+			return message;
+		}
+	}
+	
+	public boolean deleteMessage(int messageId) {
+		Boolean consulta = getMessage(messageId).map(message->{
+			messageRepository.delete(message);
+			return true;
+		}).orElse(false);
+		return consulta;
+	}
 }

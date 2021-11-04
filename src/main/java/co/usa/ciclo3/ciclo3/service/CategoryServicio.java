@@ -38,5 +38,29 @@ public class CategoryServicio {
         }
 
     }
+
+    public Category update(Category category) {
+		if(category.getId()!=null) {
+			Optional<Category>consulta=categoryRepository.getCategory(category.getId());
+			if(!consulta.isEmpty()) {
+				if(category.getName()!=null) {
+					consulta.get().setName(category.getName());
+				}
+				if(category.getDescription()!=null) {
+					consulta.get().setDescription(category.getDescription());
+				}
+				return categoryRepository.save(consulta.get());
+			}
+		}
+		return category;
+	}
+	
+	public boolean deleteCategory(int categoryId){
+		Boolean consulta=getCategory(categoryId).map(category->{
+			categoryRepository.delete(category);
+			return true;
+		}).orElse(false);
+		return consulta;
+	}
     
 }
