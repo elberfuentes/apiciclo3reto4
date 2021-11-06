@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.usa.ciclo3.ciclo3.model.Reservation;
+import co.usa.ciclo3.ciclo3.model.Reportes.ReportsClient;
+import co.usa.ciclo3.ciclo3.model.Reportes.ReportsStatus;
 import co.usa.ciclo3.ciclo3.service.ReservationServicio;
 
 @RestController
@@ -55,5 +57,33 @@ public class ReservationControlador {
     public boolean delete(@PathVariable("id") int reservationId) {
         return reservationServicio.deleteReservation(reservationId);
     }
+    
+    /**
+     * Reports 
+     * @return
+     */
+    
+    @GetMapping("/report-status")
+    public ReportsStatus getReservas(){
+        return reservationServicio.reporteStatusServicio();
+    }
+    /**
+     * 
+     * @param dateOne
+     * @param dateTwo
+     * @return
+     */
+    @GetMapping("/report-dates/{dateOne}/{dateTwo}")
+     public List<Reservation> getReservasTiempo (@PathVariable("dateOne")String dateOne, @PathVariable("dateTwo")String dateTwo ){
+         return reservationServicio.reporteTiempoServicio(dateOne, dateTwo);
+     }
+     /**
+      * 
+      * @return
+      */
+     @GetMapping("/report-clients")
+     public List<ReportsClient> getClientes(){
+         return reservationServicio.reporteClientesServicio();
+     }
     
 }

@@ -1,5 +1,9 @@
 package co.usa.ciclo3.ciclo3.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import co.usa.ciclo3.ciclo3.model.Reservation;
+import co.usa.ciclo3.ciclo3.model.Reportes.ReportsClient;
+import co.usa.ciclo3.ciclo3.model.Reportes.ReportsStatus;
 import co.usa.ciclo3.ciclo3.repository.ReservationRepository;
 
 /**
@@ -24,7 +30,7 @@ public class ReservationServicio {
      */
 
     @Autowired
-    ReservationRepository reservationRepository;
+    private ReservationRepository reservationRepository;
 
     public List<Reservation> getAll(){
         return reservationRepository.getAll();        
@@ -108,5 +114,48 @@ public class ReservationServicio {
 		}).orElse(false);
 		return consulta;
 	}
+
+    /**
+	 * Reports Reservations
+	 * Reports Status
+	 * @return
+	 */
+	public ReportsStatus reporteStatusServicio (){
+        List<Reservation>completed= reservationRepository.ReservacionStatusRepositorio("completed");
+        List<Reservation>cancelled= reservationRepository.ReservacionStatusRepositorio("cancelled");
+        //call constructor
+        return new ReportsStatus(completed.size(), cancelled.size() );
+    }
+    /**
+     * Time and service
+     * @param datoA
+     * @param datoB
+     * @return
+     */
+    public List<Reservation> reporteTiempoServicio (String datoA, String datoB){
+        SimpleDateFormat parser = new SimpleDateFormat ("yyyy-MM-dd");
+        
+        Date datoUno = new Date();
+        Date datoDos = new Date();
+        
+        try{
+             datoUno = parser.parse(datoA);
+             datoDos = parser.parse(datoB);
+        }catch(ParseException evt){
+            evt.printStackTrace();
+        }if(datoUno.before(datoDos)){
+            return reservationRepository.ReservacionTiempoRepositorio(datoUno, datoDos);
+        }else{
+            return new ArrayList<>();
+        
+        } 
+    }
+    /**
+     * Reports Client
+     * @return
+     */
+     public List<ReportsClient> reporteClientesServicio(){
+            return reservationRepository.getClientesRepositorio();
+        }
     
 }
